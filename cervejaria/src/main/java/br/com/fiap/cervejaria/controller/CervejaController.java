@@ -81,4 +81,11 @@ public class CervejaController {
         cervejaDTO.setPreco(precoCervejaDTO.getPreco());
         return cervejaDTO;
     }
+
+    //http://localhost:8081/cervejas/1
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Integer id){
+        CervejaDTO cervejaDTO = findById(id);
+        cervejaDTOList.remove(cervejaDTO);
+    }
 }
