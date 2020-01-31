@@ -12,7 +12,7 @@ public class CervejaControllerUnitTest {
     @Test
 
     public void getAllTest(){
-        CervejaController cervejaController = new CervejaController();
+        CervejaController cervejaController = new CervejaController(service);
 
         List<CervejaDTO> cervejaDTOList = cervejaController.getAll(null);
 
