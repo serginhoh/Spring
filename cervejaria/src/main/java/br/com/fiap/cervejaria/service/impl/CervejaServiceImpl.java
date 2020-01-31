@@ -7,6 +7,9 @@ import br.com.fiap.cervejaria.dto.CervejaDTO;
 import br.com.fiap.cervejaria.dto.CreateCervejaDTO;
 import br.com.fiap.cervejaria.dto.PrecoCervejaDTO;
 import br.com.fiap.cervejaria.dto.Tipo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,6 +46,18 @@ public class CervejaServiceImpl implements CervejaService {
                     .map(CervejaDTO::new)
                     .collect(Collectors.toList());
         }
+    }
+
+    @Override
+    public Page<CervejaDTO> findAll(Integer size, Integer page, Tipo tipo) {
+        Pageable pageable = PageRequest.of(page, size);
+        if(tipo == null){
+            return cervejaRepository.findAll(pageable)
+                    .map(CervejaDTO::new);
+        }
+
+        return cervejaRepository.findAllByTipo(pageable, tipo)
+                .map(CervejaDTO::new);
     }
 
     @Override

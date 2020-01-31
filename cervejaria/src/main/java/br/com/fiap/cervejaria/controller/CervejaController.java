@@ -6,6 +6,7 @@ import br.com.fiap.cervejaria.dto.PrecoCervejaDTO;
 import br.com.fiap.cervejaria.dto.Tipo;
 import br.com.fiap.cervejaria.service.CervejaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +29,11 @@ public class CervejaController {
     @GetMapping("/getAll")
     public List<CervejaDTO> getAll(@RequestParam(required = false) Tipo tipo) {
         return service.findAll(tipo);
+    }
+
+    @GetMapping("/getAllPaged")
+    public Page<CervejaDTO> getAll(@RequestParam()Integer size, @RequestParam()Integer page, @RequestParam(required = false) Tipo tipo) {
+        return service.findAll(size, page, tipo);
     }
 
     //http://localhost:8081/cervejas/1

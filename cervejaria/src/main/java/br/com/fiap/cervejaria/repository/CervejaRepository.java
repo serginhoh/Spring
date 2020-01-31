@@ -13,5 +13,5 @@ public interface CervejaRepository extends JpaRepository<Cerveja, Integer> {
     @Query("from Cerveja c where c.tipo = :tipo")
     List<Cerveja> findAllByTipo(Tipo tipo);
 
-    Page<Cerveja> findAll(Pageable pageable);
+    Page<Cerveja> findAllByTipo(Pageable pageable, Tipo tipo);
 }
