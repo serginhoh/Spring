@@ -26,32 +26,29 @@ public class CervejaServiceImpl implements CervejaService {
 
     private CervejaRepository cervejaRepository;
 
-    public CervejaServiceImpl(CervejaRepository cervejaRepository){
+    public CervejaServiceImpl(CervejaRepository cervejaRepository) {
         this.cervejaRepository = cervejaRepository;
     }
 
     @Override
     public List<CervejaDTO> findAll(Tipo tipo) {
 
-        if (tipo == null){
-        return cervejaRepository.findAll()
-                .stream()
+        List<Cerveja> cervejaList;
+        if (tipo == null) {
+            cervejaList = cervejaRepository.findAll();
+        } else {
+            cervejaList = cervejaRepository.findAllByTipo(tipo);
+        }
+
+        return cervejaList.stream()
                 .map(CervejaDTO::new)
                 .collect(Collectors.toList());
-        //.map(cerveja -> new CervejaDTO(cerveja))
-        }
-        else{
-            return cervejaRepository.findAllByTipo(tipo)
-                    .stream()
-                    .map(CervejaDTO::new)
-                    .collect(Collectors.toList());
-        }
     }
 
     @Override
     public Page<CervejaDTO> findAll(Integer size, Integer page, Tipo tipo) {
         Pageable pageable = PageRequest.of(page, size);
-        if(tipo == null){
+        if (tipo == null) {
             return cervejaRepository.findAll(pageable)
                     .map(CervejaDTO::new);
         }
@@ -62,62 +59,46 @@ public class CervejaServiceImpl implements CervejaService {
 
     @Override
     public CervejaDTO findById(Integer id) {
+        return saveAndGetCervejaDTO(getCerveja(id));
+    }
+
+    private Cerveja getCerveja(Integer id) {
         return cervejaRepository.findById(id)
-                .map(CervejaDTO::new)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
     public CervejaDTO create(CreateCervejaDTO createCervejaDTO) {
         Cerveja cerveja = new Cerveja(createCervejaDTO);
+        return saveAndGetCervejaDTO(cerveja);
+    }
+
+    @Override
+    public CervejaDTO update(Integer id, CreateCervejaDTO createCervejaDTO) {
+        Cerveja cerveja = getCerveja(id);
+        cerveja.setMarca((createCervejaDTO.getMarca()));
+        cerveja.setPreco(createCervejaDTO.getPreco());
+        cerveja.setDataLancamento(createCervejaDTO.getDataLancamento());
+        cerveja.setTeorAlcoolico(createCervejaDTO.getTeorAlcoolico());
+        cerveja.setTipo(createCervejaDTO.getTipo());
+        return saveAndGetCervejaDTO(cerveja);
+    }
+
+    @Override
+    public CervejaDTO update(Integer id, PrecoCervejaDTO precoCervejaDTO) {
+        Cerveja cerveja = getCerveja(id);
+        cerveja.setPreco(precoCervejaDTO.getPreco());
+        return saveAndGetCervejaDTO(cerveja);
+    }
+
+    private CervejaDTO saveAndGetCervejaDTO(Cerveja cerveja) {
         Cerveja savedCerveja = cervejaRepository.save(cerveja);
         return new CervejaDTO(savedCerveja);
     }
 
     @Override
-    public CervejaDTO update(Integer id, CreateCervejaDTO createCervejaDTO) {
-        Optional<Cerveja> optCerveja = cervejaRepository.findById(id);
-
-        if (optCerveja.isPresent()) {
-            Cerveja cerveja = optCerveja.get();
-            cerveja.setMarca((createCervejaDTO.getMarca()));
-            cerveja.setPreco(createCervejaDTO.getPreco());
-            cerveja.setDataLancamento(createCervejaDTO.getDataLancamento());
-            cerveja.setTeorAlcoolico(createCervejaDTO.getTeorAlcoolico());
-            cerveja.setTipo(createCervejaDTO.getTipo());
-            Cerveja savedCerveja = cervejaRepository.save(cerveja);
-            return new CervejaDTO(savedCerveja);
-        }
-        else{
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-    }
-
-    @Override
-    public CervejaDTO update(Integer id, PrecoCervejaDTO precoCervejaDTO) {
-        Optional<Cerveja> optCerveja = cervejaRepository.findById(id);
-        if (optCerveja.isPresent()) {
-            Cerveja cerveja = optCerveja.get();
-            cerveja.setPreco(precoCervejaDTO.getPreco());
-            Cerveja savedCerveja = cervejaRepository.save(cerveja);
-            return new CervejaDTO(savedCerveja);
-        }
-        else{
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @Override
     public void delete(Integer id) {
-        Optional<Cerveja> optCerveja = cervejaRepository.findById(id);
-        if (optCerveja.isPresent()) {
-            Cerveja cerveja = optCerveja.get();
-            cervejaRepository.delete(cerveja);
-        }
-        else{
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
+        Cerveja cerveja = getCerveja(id);
+        cervejaRepository.delete(cerveja);
     }
 }
