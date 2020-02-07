@@ -53,7 +53,7 @@ public class CervejaServiceImpl implements CervejaService {
                     .map(CervejaDTO::new);
         }
 
-        return cervejaRepository.findAllByTipo(pageable, tipo)
+        return cervejaRepository.findAllByTipo(tipo, pageable)
                 .map(CervejaDTO::new);
     }
 

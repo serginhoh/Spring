@@ -8,6 +8,10 @@ spring:
     password: fiap
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
-
+  security:
+    user:
+      name: admin
+      password: fiap
+      roles: ADMIN
