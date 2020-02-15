@@ -17,7 +17,7 @@ public class UserDTO {
 
     public UserDTO(User savedUser) {
         this.id = savedUser.getId();
-        this.username = savedUser.getPassword();
+        this.username = savedUser.getUsername();
         this.createdDate = ZonedDateTime.ofInstant(savedUser.getCreatedDate().toInstant(), ZoneOffset.systemDefault());
         this.updatedDate = ZonedDateTime.ofInstant(savedUser.getUpdatedDate().toInstant(), ZoneOffset.systemDefault());
     }

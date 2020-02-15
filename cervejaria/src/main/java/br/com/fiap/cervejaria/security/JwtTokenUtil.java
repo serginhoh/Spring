@@ -40,7 +40,7 @@ public class JwtTokenUtil {
     }
 
     private Date getDateFromLocalDateTime(LocalDateTime localDateTime) {
-        return Date.from(LocalDateTime.now().toInstant(OffsetDateTime.now().getOffset()));
+        return Date.from(localDateTime.toInstant(OffsetDateTime.now().getOffset()));
     }
 
 }
